@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Telegram.Bot" Version="22.4.4" />
+      <PackageReference Include="Telegram.Bots.Extensions.Polling" Version="5.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="docs\" />
+      <Folder Include="src\Bot\Extensions\" />
+      <Folder Include="src\Bot\Middleware\" />
+      <Folder Include="src\Bot\Services\" />
+      <Folder Include="src\Bot\Utils\" />
+      <Folder Include="src\Infrastructure\Data\" />
+      <Folder Include="src\Infrastructure\Logging\" />
+      <Folder Include="src\Infrastructure\Mapping\" />
+      <Folder Include="src\Shared\Enums\" />
+      <Folder Include="src\Shared\Interfaces\" />
+      <Folder Include="tests\IntegrationTests\" />
+      <Folder Include="tests\UnitTests\" />
+      <Folder Include="tools\" />
+    </ItemGroup>
+
+</Project>
