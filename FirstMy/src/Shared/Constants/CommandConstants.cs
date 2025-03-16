@@ -1,4 +1,4 @@
-﻿namespace FirstMy.src.Shared.Constants;
+﻿namespace FirstMy.Shared.Constants;
 
 public static class CommandConstants
 {

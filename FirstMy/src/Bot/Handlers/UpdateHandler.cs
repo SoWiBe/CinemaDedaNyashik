@@ -1,4 +1,4 @@
-﻿using FirstMy.src.Shared.Constants;
+﻿using FirstMy.Shared.Constants;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;

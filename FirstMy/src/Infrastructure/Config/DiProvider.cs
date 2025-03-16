@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using FirstMy.Bot;
 using FirstMy.src.Bot;
 using FirstMy.src.Bot.Models;
 using Microsoft.Extensions.Configuration;
