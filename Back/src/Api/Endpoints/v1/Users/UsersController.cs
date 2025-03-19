@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Back.Api.Endpoints.v1.Requests.Users;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Back.Api.Endpoints.Requests.Users;
 using Back.Api.Infrastructure.Dto.Users;
 using Back.Api.Infrastructure.Services.Core;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +20,41 @@ public class UsersController : ControllerBase
         _mapper = mapper;
     }
     
-    [HttpGet]
-    public IActionResult GetAll()
+    [HttpGet("/api/Users/{telegramUserId}")]
+    public async Task<IActionResult> GetUser([FromRoute, Required] long telegramUserId, CancellationToken cancellationToken = default)
     {
-        var users = _userService.GetAll();
+        var user = await _userService.GetById(telegramUserId, cancellationToken);
+        return Ok(user);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+    {
+        var users = await _userService.GetAll(cancellationToken);
         return Ok(users);
     }
     
     [HttpPost]
-    public IActionResult Create(CreateUserRequest request)
+    public async Task<IActionResult> Create(CreateUserRequest request, CancellationToken cancellationToken = default)
     {
         var dto = _mapper.Map<UserDto>(request);
-        var user = _userService.Create(dto);
+        var user = await _userService.Create(dto, cancellationToken);
         return Ok(user);
+    }
+    
+    [HttpDelete("/api/Users/all")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteAll(CancellationToken cancellationToken = default)
+    {
+        await _userService.DeleteAll(cancellationToken);
+        return NoContent();
+    }
+    
+    [HttpDelete("/api/Users/{telegramUserId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete([FromRoute, Required] long telegramUserId, CancellationToken cancellationToken = default)
+    {
+        await _userService.DeleteById(telegramUserId, cancellationToken);
+        return NoContent();
     }
 }

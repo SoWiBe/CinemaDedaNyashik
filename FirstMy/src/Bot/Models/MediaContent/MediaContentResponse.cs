@@ -1,8 +1,8 @@
-﻿using Back.Api.Models.Core;
+﻿using FirstMy.Bot.Models.User;
 
-namespace Back.Api.Models;
+namespace FirstMy.Bot.Models.MediaContent;
 
-public class MediaContent : BaseModel
+public class MediaContentResponse
 {
     public string? Title { get; set; }
     public string? Description { get; set; }
@@ -10,5 +10,4 @@ public class MediaContent : BaseModel
     public string? Genres { get; set; }
     
     public long UserId { get; set; }
-    public User? User { get; set; }
 }

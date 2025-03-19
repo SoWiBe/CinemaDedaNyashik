@@ -52,7 +52,7 @@ public abstract class ApiService
             }
 
             var response = await _httpClient.SendAsync(requestMessage);
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
                 throw new ApiRequestException(string.Format("Error after calling method {Method} with {Uri}", httpMethod,
                     request));
 

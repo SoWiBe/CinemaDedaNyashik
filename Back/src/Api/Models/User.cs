@@ -19,7 +19,7 @@ public class User : BaseModel
     /// <summary>
     /// Имя пользователя (First Name)
     /// </summary>
-    [Required] [MaxLength(100)] public string FirstName { get; set; } = null!;
+    [Required] [MaxLength(100)] public string? FirstName { get; set; } = null!;
     /// <summary>
     /// Фамилия пользователя (Last Name) - может быть null
     /// </summary>
@@ -45,5 +45,7 @@ public class User : BaseModel
     /// Обновление времени модификации
     /// </summary>
     public void UpdateModified() { UpdatedAt = DateTime.UtcNow; }
+
+    public ICollection<MediaContent>? MediaContents { get; set; } = Array.Empty<MediaContent>();
 
 }

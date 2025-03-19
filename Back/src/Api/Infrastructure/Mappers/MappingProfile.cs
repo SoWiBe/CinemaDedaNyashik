@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using Back.Api.Endpoints.v1.Requests.MediaContent;
-using Back.Api.Endpoints.v1.Requests.Users;
+using Back.Api.Endpoints.Requests.MediaContent;
+using Back.Api.Endpoints.Requests.Users;
+using Back.Api.Endpoints.Responses;
 using Back.Api.Infrastructure.Dto.MediaContent;
 using Back.Api.Infrastructure.Dto.Users;
 using Back.Api.Models;
@@ -15,5 +16,7 @@ public class MappingProfile : Profile
         CreateMap<UserDto, CreateUserRequest>().ReverseMap();
         CreateMap<MediaContent, MediaContentDto>().ReverseMap();
         CreateMap<MediaContentDto, CreateMediaContentRequest>().ReverseMap();
+        CreateMap<MediaContentResponse, MediaContent>().ReverseMap();
+        CreateMap<MediaContentResponse, MediaContentDto>().ReverseMap();
     }   
 }

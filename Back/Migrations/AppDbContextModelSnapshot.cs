@@ -45,7 +45,12 @@ namespace Back.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("MediaContents");
                 });
@@ -86,6 +91,20 @@ namespace Back.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Back.Api.Models.MediaContent", b =>
+                {
+                    b.HasOne("Back.Api.Models.User", "User")
+                        .WithMany("MediaContents")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Back.Api.Models.User", b =>
+                {
+                    b.Navigation("MediaContents");
                 });
 #pragma warning restore 612, 618
         }

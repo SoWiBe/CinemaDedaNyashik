@@ -19,4 +19,13 @@ public class MediaContentService : IMediaContentService
 
     public async Task<MediaContent> Create(MediaContentDto dto, CancellationToken cancellationToken)
         => await _mediaContentRepository.Create(dto, cancellationToken);
+
+    public async Task<MediaContent> GetMyRandom(long telegramUserId, CancellationToken cancellationToken)
+        => await _mediaContentRepository.GetMyRandom(telegramUserId, cancellationToken);
+
+    public async Task<IEnumerable<MediaContent>> GetMyList(long telegramUserId, CancellationToken cancellationToken)
+        => await _mediaContentRepository.GetMyList(telegramUserId, cancellationToken);
+
+    public async Task<MediaContent> GetRandom(CancellationToken cancellationToken)
+        => await _mediaContentRepository.GetRandom(cancellationToken);
 }

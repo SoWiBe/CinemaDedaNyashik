@@ -1,5 +1,7 @@
-﻿using AutoMapper;
-using Back.Api.Endpoints.v1.Requests.MediaContent;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Back.Api.Endpoints.Requests.MediaContent;
+using Back.Api.Endpoints.Responses;
 using Back.Api.Infrastructure.Dto.MediaContent;
 using Back.Api.Infrastructure.Services.Core;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +21,35 @@ public class MediaContentController : ControllerBase
         _mapper = mapper;
     }
     
-    [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+    [HttpGet("/api/MediaContent/{telegramUserId}/list")]
+    public async Task<ActionResult<IEnumerable<Models.MediaContent>>> GetMyList([FromRoute, Required] long telegramUserId, 
+        CancellationToken cancellationToken = default)
     {
-        var mediaContents = await _mediaContentService.GetAll(cancellationToken);
+        var mediaContents = await _mediaContentService.GetMyList(telegramUserId, cancellationToken);
         return Ok(mediaContents);
     }
     
+    [HttpGet("/api/MediaContent/{telegramUserId}/random")]
+    public async Task<ActionResult<MediaContentResponse>> GetMyRandom([FromRoute, Required] long telegramUserId, CancellationToken cancellationToken = default)
+    {
+        var mediaContent = await _mediaContentService.GetMyRandom(telegramUserId, cancellationToken);
+        var response = _mapper.Map<MediaContentResponse>(mediaContent);
+        return Ok(response);
+    }
+    
+    [HttpGet("/api/MediaContent/all/random")]
+    public async Task<ActionResult<MediaContentResponse>> GetRandom(CancellationToken cancellationToken = default)
+    {
+        var mediaContent = await _mediaContentService.GetRandom(cancellationToken);
+        var response = _mapper.Map<MediaContentResponse>(mediaContent);
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreateMediaContentRequest request, CancellationToken cancellationToken = default)
     {
         var dto = _mapper.Map<MediaContentDto>(request);
-        var mediaContent = await _mediaContentService.Create(dto, cancellationToken);
-        return Ok(mediaContent);
+        await _mediaContentService.Create(dto, cancellationToken);
+        return NoContent();
     }
 }

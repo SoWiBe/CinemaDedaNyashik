@@ -1,4 +1,4 @@
-﻿using Back.Api.Endpoints.v1.Requests.Users;
+﻿using Back.Api.Endpoints.Requests.Users;
 
 namespace Back.Api.Infrastructure.Dto.Users;
 

@@ -1,7 +1,11 @@
 ﻿using FirstMy.Bot.Models;
+using FirstMy.Bot.Models.MediaContent;
+using FirstMy.Bot.Models.User;
 using FirstMy.Bot.Services.Core;
+using FirstMy.Bot.Services.MediaService;
 using FirstMy.Bot.Services.Users;
 using FirstMy.Shared.Constants;
+using Microsoft.AspNetCore.Http.Timeouts;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -12,34 +16,81 @@ namespace FirstMy.Bot.Handlers;
 public class CinemaBotHandler : IUpdateHandler
 {
     private readonly IUsersService _usersService;
+    private readonly IMediaContentService _mediaContentService;
+    
+    private readonly Dictionary<long, BotState> _userStates = new();
 
-    public CinemaBotHandler(IUsersService userService)
+    public CinemaBotHandler(IUsersService userService, IMediaContentService mediaContentService)
     {
         _usersService = userService;
+        _mediaContentService = mediaContentService;
     }
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         if (update.Message is not { } message) return;
         if (message.Text is null ) return;
+        
+        var chatId = message.Chat.Id;
+        
+        if (!_userStates.TryGetValue(chatId, out var userState))
+        {
+            userState = new BotState { ChatId = chatId };
+            _userStates[chatId] = userState;
+        }
 
-        switch (message.Text.ToLower())
+        switch (userState.CurrentState)
+        {
+            case BotStateType.WaitingForCommand:
+                await WaitingCommands(botClient, message, userState);
+                break;
+
+            case BotStateType.WaitingForText:
+                if (!string.IsNullOrWhiteSpace(message.Text))
+                {
+                    await ProcessUserInput(chatId, botClient, message.From.Id, message.Text);
+                    userState.CurrentState = BotStateType.WaitingForCommand;
+                }
+                break;
+        }
+
+        
+        
+        Console.WriteLine($"Received a {message.Text} in chat {message.Chat.Id}.");
+    }
+
+    private async Task WaitingCommands(ITelegramBotClient botClient, Message message, BotState userState)
+    {
+        switch (message.Text!.ToLower())
         {
             case CommandConstants.Info:
-                await SendInfoMessage(botClient, message.Chat.Id);
+                await SendSecret(botClient, message);
                 break;
             case CommandConstants.Add:
                 await SendMediaContent(botClient, message.Chat.Id);
+                userState.CurrentState = BotStateType.WaitingForText;
                 break;
-            case CommandConstants.Secret:
-                await SendSecret(botClient, message);
+            case CommandConstants.List:
+                await SendListContent(botClient, message);
                 break;
             default:
                 await EchoMessage(botClient, message);
                 break;
         }
-        
-        Console.WriteLine($"Received a {message.Text} in chat {message.Chat.Id}.");
+    }
+
+    private async Task SendListContent(ITelegramBotClient botClient, Message message)
+    {
+        try
+        {
+           var result = await _mediaContentService.GetMyList(message.From.Id);
+           await botClient.SendMessage(message.Chat.Id, result.FirstOrDefault()?.Title);
+        }
+        catch (ApiRequestException ex)
+        {
+            await botClient.SendMessage(message.Chat.Id, ex.Message);
+            return;
+        }
     }
 
     private async Task SendSecret(ITelegramBotClient botClient, Message message)
@@ -47,6 +98,11 @@ public class CinemaBotHandler : IUpdateHandler
         var user = message.From;
 
         try
+        {
+            await _usersService.GetUserAsync(user.Id);
+            await botClient.SendMessage(message.Chat.Id, "Привет! Я твой бот. Доступные команды: /info, /add, /list, /secret");
+        }
+        catch (ApiRequestException ex)
         {
             await _usersService.CreateUserAsync(new UserRequest
             {
@@ -57,20 +113,34 @@ public class CinemaBotHandler : IUpdateHandler
                 TelegramUserId = user.Id
 
             });
+            await botClient.SendMessage(message.Chat.Id, "Привет! Я твой бот. Доступные команды: /info, /add, /list, /secret");
         }
-        catch (ApiRequestException ex)
-        {
-            await botClient.SendMessage(message.Chat.Id, ex.Message);
-            return;
-        }
-        
-        await botClient.SendMessage(message.Chat.Id, "Привет! Я твой бот. Доступные команды: /info, /add, /list, /secret");
     }
 
     private async Task SendMediaContent(ITelegramBotClient botClient, long chatId)
     {
-        var welcomeText = "ДОБАВИЛ КОНТЕНТ!";
-        await botClient.SendMessage(chatId, welcomeText);
+        var mediaContentText = "Пожалуйста введите название для вашего контента: ";
+        await botClient.SendMessage(chatId, mediaContentText);
+    }
+    
+    private async Task ProcessUserInput(long chatId, ITelegramBotClient telegramBotClient, long userId, string userInput)
+    {
+        try
+        {
+            await _mediaContentService.CreateContent(new MediaContentRequest
+            {
+                Title = userInput,
+                UserId = userId
+            });
+        }
+        catch (ApiRequestException ex)
+        {
+            await telegramBotClient.SendMessage(chatId, ex.Message);
+            return;
+        }
+
+        var successText = "Контент успешно добавлен!";
+        await telegramBotClient.SendMessage(chatId, successText);
     }
 
     private async Task SendInfoMessage(ITelegramBotClient botClient, long chatId)

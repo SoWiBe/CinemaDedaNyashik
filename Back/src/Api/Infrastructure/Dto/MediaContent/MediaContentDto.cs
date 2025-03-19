@@ -1,4 +1,4 @@
-﻿using Back.Api.Endpoints.v1.Requests.MediaContent;
+﻿using Back.Api.Endpoints.Requests.MediaContent;
 
 namespace Back.Api.Infrastructure.Dto.MediaContent;
 

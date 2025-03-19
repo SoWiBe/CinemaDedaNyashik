@@ -2,6 +2,7 @@
 using FirstMy.Bot;
 using FirstMy.Bot.Handlers;
 using FirstMy.Bot.Models;
+using FirstMy.Bot.Services.MediaService;
 using FirstMy.Bot.Services.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,7 @@ public static class DiProvider
         services.AddTransient<HttpClient>();
         services.AddTransient<CinemaBotHandler>();
         services.AddScoped<IUsersService, UsersService>();
+        services.AddScoped<IMediaContentService, MediaContentService>();
 
         return services.BuildServiceProvider();
     }
