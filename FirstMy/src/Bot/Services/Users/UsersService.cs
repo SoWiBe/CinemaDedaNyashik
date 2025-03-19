@@ -12,13 +12,13 @@ public class UsersService : ApiService, IUsersService
     
     
     
-    public async Task<User> GetUserAsync(long userId)
+    // public async Task<User> GetUserAsync(long userId)
+    // {
+    //     return await GetAsync<User>($"/users/{userId}");
+    // }
+    //
+    public async Task<UserResponse> CreateUserAsync(UserRequest user)
     {
-        return await GetAsync<User>($"/users/{userId}");
-    }
-    
-    public async Task<User> CreateUserAsync(User user)
-    {
-        return await PostAsync<User>("/users", user);
+        return await PostAsync<UserResponse>("/api/Users", user);
     }
 }

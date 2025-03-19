@@ -1,6 +1,10 @@
-﻿namespace Back.Api.Data.Repositories.Core;
+﻿using Back.Api.Infrastructure.Dto.MediaContent;
+using Back.Api.Infrastructure.Repository;
+using Back.Api.Models;
 
-public interface IMediaContentRepository
+namespace Back.Api.Data.Repositories.Core;
+
+public interface IMediaContentRepository : IRepositoryBase<MediaContent>
 {
-    
+    Task<MediaContent> Create(MediaContentDto dto, CancellationToken cancellationToken);
 }

@@ -3,6 +3,8 @@ using AutoMapper;
 using Back.Api.Data;
 using Back.Api.Data.Repositories;
 using Back.Api.Data.Repositories.Core;
+using Back.Api.Infrastructure.Mappers;
+using Back.Api.Infrastructure.Middleware;
 using Back.Api.Infrastructure.Repository;
 using Back.Api.Infrastructure.Services;
 using Back.Api.Infrastructure.Services.Core;
@@ -50,6 +52,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(MappingProfile)); 
 
 builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
 // Repo
@@ -72,9 +75,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<ExceptionsMiddleware>();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
+
 
 app.MapControllers();
 

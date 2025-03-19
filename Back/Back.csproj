@@ -25,9 +25,7 @@
 
     <ItemGroup>
       <Folder Include="src\Api\Endpoints\Shared\" />
-      <Folder Include="src\Api\Endpoints\v1\Cinema\" />
       <Folder Include="src\Api\Extensions\" />
-      <Folder Include="src\Api\Infrastructure\Middleware\" />
       <Folder Include="src\Infrastructure\Settings\" />
       <Folder Include="src\Tests\IntegrationTests\" />
       <Folder Include="src\Tests\UnitTests\" />

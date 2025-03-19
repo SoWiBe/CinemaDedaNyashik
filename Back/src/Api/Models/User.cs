@@ -31,15 +31,12 @@ public class User : BaseModel
     /// <summary>
     /// Дата создания записи
     /// </summary>
-    [Required] public DateTime CreatedAt { get; set; }
+    [Required] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     /// <summary>
     /// Дата последнего обновления
     /// </summary>
-    [Required] public DateTime UpdatedAt { get; set; }
-    /// <summary>
-    /// Конструктор для создания новой записи
-    /// </summary>
-    public User() { CreatedAt = DateTime.UtcNow; UpdatedAt = DateTime.UtcNow; }
+    [Required] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
     /// <summary>
     /// Обновление времени последнего взаимодействия
     /// </summary>

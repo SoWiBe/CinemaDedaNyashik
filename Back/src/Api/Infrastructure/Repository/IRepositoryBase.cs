@@ -12,10 +12,24 @@ public interface IRepositoryBase<T> where T : class
     T? Get(object? id);
 
     /// <summary>
+    /// Получить сущность по идентификатору ASYNC
+    /// </summary>
+    /// <param name="id">Идентификатор сущности</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>Сущность или null, если не найдена</returns>
+    Task<T?> GetAsync(object? id, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Получить все сущности
     /// </summary>
     /// <returns>Список всех сущностей</returns>
     IEnumerable<T> GetAll();
+    
+    /// <summary>
+    /// Получить все сущности ASYNC
+    /// </summary>
+    /// <returns>Список всех сущностей</returns>
+    Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Найти сущности по предикату
@@ -25,10 +39,25 @@ public interface IRepositoryBase<T> where T : class
     IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
 
     /// <summary>
+    /// Найти сущности по предикату ASYNC
+    /// </summary>
+    /// <param name="predicate">Предикат для поиска</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>Список найденных сущностей</returns>
+    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Добавить новую сущность
     /// </summary>
     /// <param name="entity">Сущность для добавления</param>
     void Add(T entity);
+
+    /// <summary>
+    /// Добавить новую сущность ASYNC
+    /// </summary>
+    /// <param name="entity">Сущность для добавления</param>
+    /// <param name="cancellationToken"></param>
+    Task AddAsync(T entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Обновить существующую сущность
@@ -37,16 +66,37 @@ public interface IRepositoryBase<T> where T : class
     void Update(T entity);
 
     /// <summary>
+    /// Обновить существующую сущность ASYNC
+    /// </summary>
+    /// <param name="entity">Сущность для обновления</param>
+    /// <param name="cancellationToken"></param>
+    Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Удалить сущность
     /// </summary>
     /// <param name="entity">Сущность для удаления</param>
     void Remove(T entity);
 
     /// <summary>
+    /// Удалить сущность ASYNC
+    /// </summary>
+    /// <param name="entity">Сущность для удаления</param>
+    /// <param name="cancellationToken"></param>
+    Task RemoveAsync(T entity, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Добавить диапазон сущностей
     /// </summary>
     /// <param name="entities">Коллекция сущностей для добавления</param>
     void AddRange(IEnumerable<T> entities);
+
+    /// <summary>
+    /// Добавить диапазон сущностей ASYNC
+    /// </summary>
+    /// <param name="entities">Коллекция сущностей для добавления</param>
+    /// <param name="cancellationToken"></param>
+    Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удалить диапазон сущностей

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using System.Text.Json;
 using FirstMy.Bot.Models;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,7 @@ public abstract class ApiService
     protected ApiService(IConfiguration configuration, HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _baseUrl = configuration.GetSection("Api").Get<ApiSettings>()!.Url;
+        _baseUrl = configuration.GetSection("CinemaApi").Get<ApiSettings>()!.Url;
     }
     
     protected async Task<T> GetAsync<T>(string endpoint)
@@ -51,13 +52,16 @@ public abstract class ApiService
             }
 
             var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new ApiRequestException(string.Format("Error after calling method {Method} with {Uri}", httpMethod,
+                    request));
 
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<T>(responseContent);
             if (result is null)
                 throw new ApiRequestException(string.Format("Error after calling method {Method} with {Uri}", httpMethod,
                     request));
+            
             return result;
         }
         catch (HttpRequestException  ex)

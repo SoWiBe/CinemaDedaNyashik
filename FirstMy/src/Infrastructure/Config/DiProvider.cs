@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using FirstMy.Bot;
+using FirstMy.Bot.Handlers;
 using FirstMy.Bot.Models;
 using FirstMy.Bot.Services.Users;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,8 @@ public static class DiProvider
         services.AddSingleton(config);
         services.AddLogging();
         services.AddTransient<CinemaBot>();
+        services.AddTransient<HttpClient>();
+        services.AddTransient<CinemaBotHandler>();
         services.AddScoped<IUsersService, UsersService>();
 
         return services.BuildServiceProvider();
