@@ -1,17 +1,18 @@
 ﻿using System.Reflection;
+using FirstMy.Bot.Models;
+using FirstMy.Bot.Services.Users;
 using FirstMy.src.Bot;
-using FirstMy.src.Bot.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace FirstMy.src.Infrastructure.Config;
+namespace FirstMy.Infrastructure.Config;
 
 public static class DiProvider
 {
     public static ServiceProvider Init()
     {
-        string currentDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        var currentDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         var basePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(currentDir)));
         
         IConfiguration config = new ConfigurationBuilder()
@@ -27,9 +28,11 @@ public static class DiProvider
         });
 
         services.Configure<BotSettings>(config.GetSection("BotSettings"));
+        services.Configure<ApiSettings>(config.GetSection("Api"));
         services.AddSingleton(config);
         services.AddLogging();
         services.AddTransient<CinemaBot>();
+        services.AddScoped<IUsersService, UsersService>();
 
         return services.BuildServiceProvider();
     }

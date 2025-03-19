@@ -1,4 +1,4 @@
-﻿namespace FirstMy.src.Bot.Models;
+﻿namespace FirstMy.Bot.Models;
 
 public class BotSettings
 {

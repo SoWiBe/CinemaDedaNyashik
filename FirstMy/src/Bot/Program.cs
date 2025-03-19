@@ -1,5 +1,5 @@
-﻿using FirstMy.src.Bot;
-using FirstMy.src.Infrastructure.Config;
+﻿using FirstMy.Infrastructure.Config;
+using FirstMy.src.Bot;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
