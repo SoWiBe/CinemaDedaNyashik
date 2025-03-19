@@ -8,4 +8,5 @@ public static class CommandConstants
     public const string RandomAll = "/random-all";
     public const string List = "/list";
     public const string ListAll = "/list-all";
+    public const string Secret = "/secret";
 }

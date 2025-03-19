@@ -1,5 +1,5 @@
-﻿using FirstMy.src.Bot.Handlers;
-using FirstMy.src.Bot.Models;
+﻿using FirstMy.Bot.Handlers;
+using FirstMy.Bot.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;

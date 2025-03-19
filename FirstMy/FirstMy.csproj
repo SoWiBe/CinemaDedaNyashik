@@ -16,7 +16,6 @@
       <Folder Include="docs\" />
       <Folder Include="src\Bot\Extensions\" />
       <Folder Include="src\Bot\Middleware\" />
-      <Folder Include="src\Bot\Services\" />
       <Folder Include="src\Bot\Utils\" />
       <Folder Include="src\Infrastructure\Data\" />
       <Folder Include="src\Infrastructure\Logging\" />
