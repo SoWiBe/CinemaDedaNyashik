@@ -12,10 +12,10 @@ public abstract class ApiService
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    protected ApiService(IConfiguration configuration, HttpClient httpClient)
+    protected ApiService(IConfigurationRoot root, HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _baseUrl = configuration.GetSection("CinemaApi").Get<ApiSettings>()!.Url;
+        _baseUrl = root.GetSection("CinemaApi:Url").Get<string>() ?? string.Empty;
     }
     
     protected async Task<T?> GetAsync<T>(string endpoint)

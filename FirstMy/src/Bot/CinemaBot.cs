@@ -1,15 +1,10 @@
-﻿using FirstMy.src.Bot.Core;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FirstMy.Bot.Core;
+using FirstMy.Bot.Models;
+using Telegram.Bot;
 
 namespace FirstMy.Bot;
 
 public class CinemaBot : BotBase
 {
-    private readonly ILogger<CinemaBot> _logger;
-
-    public CinemaBot(IConfiguration configuration, ILogger<CinemaBot> logger) : base(configuration, logger)
-    {
-        _logger = logger;
-    }
+    public CinemaBot(TelegramBotClient telegramBotClient) : base(telegramBotClient) {}
 }

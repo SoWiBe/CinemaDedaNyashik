@@ -15,18 +15,15 @@ public static class DiProvider
 {
     public static ServiceProvider Init()
     {
-        var currentDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-        var basePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(currentDir)));
-        
-        IConfiguration config = new ConfigurationBuilder()
-            .SetBasePath(basePath)
-            .AddJsonFile("appsettings.json", false, true)
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets<BotSettings>()
+            .AddUserSecrets<ApiSettings>()
             .Build();
-
+        
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .WriteTo.Console()
-            .WriteTo.File("log.txt",
+            .WriteTo.File("logs/log.txt",
                 rollingInterval: RollingInterval.Day)
             .CreateLogger();
         
@@ -36,12 +33,12 @@ public static class DiProvider
             loggingBuilder.AddConsole();
             loggingBuilder.SetMinimumLevel(LogLevel.Information);
         });
-
-        services.Configure<BotSettings>(config.GetSection("BotSettings"));
-        services.Configure<ApiSettings>(config.GetSection("Api"));
+        
         services.AddSingleton(config);
         services.AddLogging();
         services.AddTransient<CinemaBot>();
+        services.AddTransient<BotSettings>();
+        services.AddTransient<ApiSettings>();
         services.AddTransient<HttpClient>();
         services.AddTransient<CinemaBotHandler>();
         services.AddScoped<IUsersService, UsersService>();
