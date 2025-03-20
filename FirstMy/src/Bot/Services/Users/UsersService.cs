@@ -1,5 +1,4 @@
-﻿using FirstMy.Bot.Models;
-using FirstMy.Bot.Models.User;
+﻿using FirstMy.Bot.Models.User;
 using FirstMy.Bot.Services.Core;
 using Microsoft.Extensions.Configuration;
 
@@ -11,13 +10,13 @@ public class UsersService : ApiService, IUsersService
     {
     }
     
-    public async Task<UserResponse> GetUserAsync(long userId)
+    public async Task<User?> GetUserAsync(long userId)
     {
-        return await GetAsync<UserResponse>($"/api/Users/{userId}");
+        return await GetAsync<User?>($"/api/Users/{userId}");
     }
 
-    public async Task<UserResponse> CreateUserAsync(UserRequest user)
+    public async Task<User?> CreateUserAsync(UserRequest? user)
     {
-        return await PostAsync<UserResponse>("/api/Users", user);
+        return await PostAsync<User?>("/api/Users", user);
     }
 }

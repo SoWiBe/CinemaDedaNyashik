@@ -4,8 +4,8 @@ namespace FirstMy.Bot.Services.MediaService;
 
 public interface IMediaContentService
 {
-    Task<IEnumerable<MediaContentResponse>> GetMyList(long userId);
-    Task<MediaContentResponse> GetMyRandom(long userId);
-    Task<MediaContentResponse> GetRandom();
-    Task<MediaContentResponse> CreateContent(MediaContentRequest request);
+    Task<IEnumerable<MediaContentResponse>?> GetMyList(long userId);
+    Task<MediaContentResponse?> GetMyRandom(long userId);
+    Task<MediaContentResponse?> GetRandom();
+    Task<bool> CreateContent(MediaContentRequest? request);
 }

@@ -22,11 +22,12 @@ public class MediaContentController : ControllerBase
     }
     
     [HttpGet("/api/MediaContent/{telegramUserId}/list")]
-    public async Task<ActionResult<IEnumerable<Models.MediaContent>>> GetMyList([FromRoute, Required] long telegramUserId, 
+    public async Task<ActionResult<IEnumerable<MediaContentResponse>>> GetMyList([FromRoute, Required] long telegramUserId, 
         CancellationToken cancellationToken = default)
     {
         var mediaContents = await _mediaContentService.GetMyList(telegramUserId, cancellationToken);
-        return Ok(mediaContents);
+        var result = mediaContents.Select(x => _mapper.Map<MediaContentResponse>(x));
+        return Ok(result);
     }
     
     [HttpGet("/api/MediaContent/{telegramUserId}/random")]

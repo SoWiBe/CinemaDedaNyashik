@@ -5,6 +5,6 @@ namespace FirstMy.Bot.Services.Users;
 
 public interface IUsersService
 {
-    Task<UserResponse> GetUserAsync(long userId);
-    Task<UserResponse> CreateUserAsync(UserRequest user);
+    Task<User?> GetUserAsync(long userId);
+    Task<User?> CreateUserAsync(UserRequest? user);
 }

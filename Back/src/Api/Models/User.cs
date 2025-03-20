@@ -46,6 +46,6 @@ public class User : BaseModel
     /// </summary>
     public void UpdateModified() { UpdatedAt = DateTime.UtcNow; }
 
-    public ICollection<MediaContent>? MediaContents { get; set; } = Array.Empty<MediaContent>();
+    public IEnumerable<MediaContent>? MediaContents { get; set; }
 
 }

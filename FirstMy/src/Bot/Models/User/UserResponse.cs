@@ -1,6 +1,6 @@
 ﻿namespace FirstMy.Bot.Models.User;
 
-public abstract class UserResponse
+public class User
 {
     public long TelegramUserId { get; set; }
     public string? Username { get; set; } 

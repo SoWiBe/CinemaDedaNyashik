@@ -25,11 +25,12 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         if (isExist)
             throw new CustomException("Данный контент был найден, пожалуйста, введите другой!");
         
-        isExist = await _context.Users.AnyAsync(x => x.TelegramUserId == dto.UserId, cancellationToken: cancellationToken);
-        if (!isExist)
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.TelegramUserId == dto.UserId, cancellationToken: cancellationToken);
+        if (user is null)
             throw new CustomException("Данный пользователь не был найден, пожалуйста, введите другой!");
         
         var mediaContent = _mapper.Map<MediaContent>(dto);
+        mediaContent.UserId = user.Id;
         await _context.MediaContents.AddAsync(mediaContent, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -47,7 +48,7 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         
         var randomItem = user.MediaContents!
             .OrderBy(x => x.Title)
-            .Skip(random.Next(user.MediaContents!.Count))
+            .Skip(random.Next(user.MediaContents!.Count()))
             .Take(1)
             .FirstOrDefault();
         
@@ -64,7 +65,7 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         if (user.MediaContents?.Any() == false)
             throw new CustomException("У вас пока что нет контента для получения!");
         
-        return user.MediaContents!;
+        return user.MediaContents!; 
     }
 
     public async Task<MediaContent> GetRandom(CancellationToken cancellationToken)
@@ -75,7 +76,7 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         
         var randomItem = mediaContents
             .OrderBy(x => x.Title)
-            .Skip(random.Next(mediaContents!.Count))
+            .Skip(random.Next(mediaContents!.Count()))
             .Take(1)
             .FirstOrDefault();
         
