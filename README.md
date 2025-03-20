@@ -1,5 +1,5 @@
 # CinemaDedaNyashik
-**Бот для работы с Фильмами / Сериалами / Аниме**
+**Бот для работы с Фильмами / Сериалами / Аниме** **@CinemaDedaNyashikBot**
 
 # Первые шаги
 ![image](https://github.com/user-attachments/assets/105659e4-f021-4c5a-9175-d79ab5ce42be)
