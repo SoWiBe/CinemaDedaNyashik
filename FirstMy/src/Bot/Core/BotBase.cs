@@ -1,31 +1,28 @@
-﻿using FirstMy.Bot.Handlers;
-using FirstMy.Bot.Models;
+﻿using FirstMy.Bot.Models;
+using FirstMy.Shared.Constants;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
-namespace FirstMy.src.Bot.Core;
+namespace FirstMy.Bot.Core;
 
 public abstract class BotBase
 {
-    protected ILogger Logger;
-    private TelegramBotClient BotClient { get; set; }
-    private BotSettings BotSettings { get; set; }
-
-    protected BotBase(IConfiguration configuration, ILogger logger)
+    protected BotBase(TelegramBotClient botClient)
     {
-        Logger = logger;
-        BotSettings = configuration.GetSection("BotSettings").Get<BotSettings>()!;
-        BotClient = new TelegramBotClient(BotSettings!.Token);
+        BotClient = botClient;
     }
+
+    private TelegramBotClient BotClient { get; }
     
+
     public async Task StartAsync(IUpdateHandler updateHandler)
     {
         try
         {
-            Logger.LogInformation("Инициализация бота ...");
+            Log.Information(StatusConstants.InitBot);
 
             var receiverOptions = new ReceiverOptions
             {
@@ -39,13 +36,13 @@ public abstract class BotBase
                 updateHandler: updateHandler,
                 cancellationToken: cts.Token);
 
-            var me = await BotClient.GetMe( cancellationToken: cts.Token);
+            var me = await BotClient.GetMe(cancellationToken: cts.Token);
 
-            Logger.LogInformation($"Бот запущен и готов к работе {me.Username}");
+            Log.Information($"Бот запущен и готов к работе {me.Username}");
         }
         catch (Exception ex)
         {
-            Logger.LogError($"Ошибка при запуске бота {ex}");
+            Log.Error($"Ошибка при запуске бота {ex}");
             throw;
         }
     }

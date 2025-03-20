@@ -1,4 +1,5 @@
-﻿using FirstMy.Bot.Models.User;
+﻿using FirstMy.Bot.Models;
+using FirstMy.Bot.Models.User;
 using FirstMy.Bot.Services.Core;
 using Microsoft.Extensions.Configuration;
 
@@ -6,7 +7,7 @@ namespace FirstMy.Bot.Services.Users;
 
 public class UsersService : ApiService, IUsersService
 {
-    public UsersService(IConfiguration configuration, HttpClient httpClient) : base(configuration, httpClient)
+    public UsersService(IConfigurationRoot root, HttpClient httpClient) : base(root, httpClient)
     {
     }
     

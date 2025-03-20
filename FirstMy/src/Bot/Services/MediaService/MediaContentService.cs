@@ -1,4 +1,5 @@
-﻿using FirstMy.Bot.Models.MediaContent;
+﻿using FirstMy.Bot.Models;
+using FirstMy.Bot.Models.MediaContent;
 using FirstMy.Bot.Services.Core;
 using Microsoft.Extensions.Configuration;
 
@@ -6,7 +7,7 @@ namespace FirstMy.Bot.Services.MediaService;
 
 public class MediaContentService : ApiService, IMediaContentService
 {
-    public MediaContentService(IConfiguration configuration, HttpClient httpClient) : base(configuration, httpClient)
+    public MediaContentService(IConfigurationRoot root, HttpClient httpClient) : base(root, httpClient)
     {
     }
 

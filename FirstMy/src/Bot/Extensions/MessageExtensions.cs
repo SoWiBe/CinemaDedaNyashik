@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using FirstMy.Bot.Models.MediaContent;
-using Telegram.Bots.Types;
 
 namespace FirstMy.Bot.Extensions;
 
@@ -17,6 +16,4 @@ public static class MessageExtensions
 
         return sb.ToString().TrimEnd();
     }
-    
-    
 }

@@ -1,20 +1,29 @@
 ﻿using FirstMy.Bot;
 using FirstMy.Bot.Handlers;
+using FirstMy.Bot.Models;
 using FirstMy.Infrastructure.Config;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Telegram.Bot;
 
 var provider = DiProvider.Init();
-var logger = provider.GetService<Logger<Program>>();
-var bot = provider.GetService<CinemaBot>();
+
 var handler = provider.GetService<CinemaBotHandler>();
+
+var config = new ConfigurationBuilder()
+    .AddUserSecrets<BotSettings>()
+    .Build();
+
+var token = config.GetSection("BotSettings:Token").Get<string>();
 
 try
 {
-    await bot!.StartAsync(handler);
+    var bot = new CinemaBot(new TelegramBotClient(token ?? string.Empty));
+    if (handler != null) await bot.StartAsync(handler);
     Console.ReadLine();
 }
-catch (Exception exception)
+catch (Exception ex)
 {
-    logger!.LogError($"Error after start: {exception}");
+    Log.Error(ex.ToString());
 }

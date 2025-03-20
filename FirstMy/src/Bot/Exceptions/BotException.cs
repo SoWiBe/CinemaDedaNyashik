@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace FirstMy.src.Bot.Exceptions;
+﻿namespace FirstMy.Bot.Exceptions;
 
 public class BotException : Exception
 {
