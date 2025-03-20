@@ -7,6 +7,7 @@ using FirstMy.Bot.Services.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace FirstMy.Infrastructure.Config;
 
@@ -21,6 +22,13 @@ public static class DiProvider
             .SetBasePath(basePath)
             .AddJsonFile("appsettings.json", false, true)
             .Build();
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.Console()
+            .WriteTo.File("log.txt",
+                rollingInterval: RollingInterval.Day)
+            .CreateLogger();
         
         var services = new ServiceCollection();
         services.AddLogging(loggingBuilder =>
