@@ -23,3 +23,4 @@
 - [ ] **Установка для тегов для фильмов**
 - [ ] **Рандом по тегам**
 
+![image](https://github.com/user-attachments/assets/1c659acb-3f81-4e13-ad4e-fbef2ea7220f)
