@@ -21,7 +21,7 @@ public abstract class BotBase
         BotClient = new TelegramBotClient(BotSettings!.Token);
     }
     
-    public async Task StartAsync()
+    public async Task StartAsync(IUpdateHandler updateHandler)
     {
         try
         {
@@ -34,8 +34,10 @@ public abstract class BotBase
             
             var cts = new CancellationTokenSource();
             
-            BotClient.StartReceiving<UpdateHandler>(receiverOptions: receiverOptions,
-                                                    cancellationToken: cts.Token);
+            BotClient.StartReceiving(
+                receiverOptions: receiverOptions,
+                updateHandler: updateHandler,
+                cancellationToken: cts.Token);
 
             var me = await BotClient.GetMe( cancellationToken: cts.Token);
 

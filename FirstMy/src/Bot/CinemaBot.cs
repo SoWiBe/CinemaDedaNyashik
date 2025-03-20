@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace FirstMy.src.Bot;
+namespace FirstMy.Bot;
 
 public class CinemaBot : BotBase
 {
