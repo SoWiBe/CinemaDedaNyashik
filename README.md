@@ -1,6 +1,10 @@
 # CinemaDedaNyashik
 **Бот для работы с Фильмами / Сериалами / Аниме** **@CinemaDedaNyashikBot**
 
+---
+![image](https://github.com/user-attachments/assets/1c659acb-3f81-4e13-ad4e-fbef2ea7220f)
+---
+
 # Первые шаги
 ![image](https://github.com/user-attachments/assets/105659e4-f021-4c5a-9175-d79ab5ce42be)
 
@@ -23,4 +27,3 @@
 - [ ] **Установка для тегов для фильмов**
 - [ ] **Рандом по тегам**
 
-![image](https://github.com/user-attachments/assets/1c659acb-3f81-4e13-ad4e-fbef2ea7220f)
