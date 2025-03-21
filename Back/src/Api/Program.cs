@@ -8,6 +8,7 @@ using Back.Api.Infrastructure.Middleware;
 using Back.Api.Infrastructure.Repository;
 using Back.Api.Infrastructure.Services;
 using Back.Api.Infrastructure.Services.Core;
+using Back.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -48,7 +49,12 @@ builder.Services
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var config = builder.Configuration
+        .AddUserSecrets<DbSettings>()
+        .Build();
+
+    var connection = config.GetSection("ConnectionStrings:DefaultConnection").Get<string>();
+    options.UseNpgsql(connection);
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

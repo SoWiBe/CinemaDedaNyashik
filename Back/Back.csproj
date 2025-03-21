@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateXmlDocumentationFile>true</GenerateXmlDocumentationFile>
-    </PropertyGroup>
+      <UserSecretsId>d7e0a6a5-4b27-4d78-9ac6-ebfe2efacfa8</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="8.0.0" />
@@ -29,7 +30,6 @@
     <ItemGroup>
       <Folder Include="src\Api\Endpoints\Shared\" />
       <Folder Include="src\Api\Extensions\" />
-      <Folder Include="src\Infrastructure\Settings\" />
       <Folder Include="src\Tests\IntegrationTests\" />
       <Folder Include="src\Tests\UnitTests\" />
     </ItemGroup>
