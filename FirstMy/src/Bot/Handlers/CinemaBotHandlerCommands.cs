@@ -1,17 +1,19 @@
 ﻿using System.Text;
 using FirstMy.Bot.Extensions;
+using FirstMy.Bot.Models;
 using FirstMy.Bot.Models.MediaContent;
 using FirstMy.Bot.Models.User;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace FirstMy.Bot.Handlers;
 
 public partial class CinemaBotHandler
 {
-     private async Task RandomAllMediaContent(ITelegramBotClient botClient, Message message)
+    private async Task RandomAllMediaContent(ITelegramBotClient botClient, Message message)
     {
         try
         {
@@ -102,7 +104,7 @@ public partial class CinemaBotHandler
         await botClient.SendMessage(chatId, mediaContentText);
     }
     
-    private async Task ProcessUserInput(long chatId, ITelegramBotClient telegramBotClient, long userId, string userInput)
+    private async Task ProcessCreateContentUserInput(long chatId, ITelegramBotClient telegramBotClient, long userId, string userInput)
     {
         try
         {   
@@ -123,7 +125,7 @@ public partial class CinemaBotHandler
         catch (ApiRequestException ex)
         {
             await telegramBotClient.SendMessage(chatId, ex.Message);
-            Log.Error($"{nameof(ProcessUserInput)} : {ex.Message}");
+            Log.Error($"{nameof(ProcessCreateContentUserInput)} : {ex.Message}");
         }
     }
 
@@ -133,6 +135,60 @@ public partial class CinemaBotHandler
             message.Chat.Id,
             $"Ты сказал(-а): {message.Text}"
         );
+    }
+
+    private async Task ClearMediaContent(ITelegramBotClient botClient, Message message, BotState userState)
+    {
+        try
+        {
+            var response = "Ваш контент не удален по какой-то причине, попробуйте позже.";
+
+            var result = true;
+            if (result)
+            {
+                response = "Ваш контент успешно очищен!";
+                userState.CurrentState = BotStateType.WaitingForText;
+            }
+            
+            await botClient.SendMessage(message.Chat.Id, response);
+        }
+        catch (ApiRequestException ex)
+        {
+            await botClient.SendMessage(message.Chat.Id, ex.Message);
+            Log.Error($"{nameof(GetListContent)} : {ex.Message}");
+        }
+    }
+
+    private async Task RemoveAtMediaContent(ITelegramBotClient botClient, Message message)
+    {
+        var elems = new List<string> { "Content", "Test 2", "datatatat 3" };
+
+        var keyboard = new List<List<InlineKeyboardButton>>();
+        for (var index = 0; index < elems.Count; index++)
+        {
+            var elem = elems[index];
+            keyboard.Add(new List<InlineKeyboardButton>
+            {
+                new InlineKeyboardButton
+                {
+                    Text = elem,
+                    CallbackData = $"{index}"
+                },
+                new InlineKeyboardButton
+                {
+                    Text = "🗑",
+                    CallbackData = $"delete_{index}"
+                },
+            });
+        }
+        
+        
+        var replyMarkup = new InlineKeyboardMarkup(keyboard);
+            
+        await botClient.SendMessage(
+            chatId: message.Chat.Id,
+            text: "Выберите действие:",
+            replyMarkup: replyMarkup);
     }
     
     private static string ToMessageFormat(IEnumerable<BotCommand> items)

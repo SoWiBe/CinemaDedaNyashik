@@ -30,4 +30,9 @@ public class MediaContentService : ApiService, IMediaContentService
     {
         return await PostAsync("/api/MediaContent", request);
     }
+
+    public Task<bool> ClearMediaContent(long userId)
+    {
+        throw new NotImplementedException();
+    }
 }
