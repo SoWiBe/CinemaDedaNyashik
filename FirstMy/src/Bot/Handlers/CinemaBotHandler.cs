@@ -61,7 +61,7 @@ public partial class CinemaBotHandler : IUpdateHandler
             case BotStateType.WaitingForText:
                 if (await IsTextAreNotCommand(botClient, message.Text) && IsTextAreNotEmpty(message.Text))
                 {
-                    await ProcessUserInput(chatId, botClient, message.From.Id, message.Text);
+                    await ProcessCreateContentUserInput(chatId, botClient, message.From.Id, message.Text);
                     userState.CurrentState = BotStateType.WaitingForCommand;
                 }
                 break;
@@ -115,6 +115,12 @@ public partial class CinemaBotHandler : IUpdateHandler
                 break;
             case CommandConstants.RandomAll:
                 await RandomAllMediaContent(botClient, message);
+                break;
+            case CommandConstants.Clear:
+                await ClearMediaContent(botClient, message, userState);
+                break;
+            case CommandConstants.RemoveAt:
+                await RemoveAtMediaContent(botClient, message);
                 break;
             default:
                 await EchoMessage(botClient, message);
