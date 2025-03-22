@@ -1,11 +1,12 @@
-﻿using FirstMy.Bot;
-using FirstMy.Bot.Handlers;
-using FirstMy.Bot.Models;
-using FirstMy.Infrastructure.Config;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Telegram.Bot;
+
+using FirstMy.Bot;
+using FirstMy.Bot.Handlers;
+using FirstMy.Bot.Models;
+using FirstMy.Infrastructure.Config;
 
 var provider = DiProvider.Init();
 
@@ -19,7 +20,8 @@ var token = config.GetSection("BotSettings:Token").Get<string>();
 
 try
 {
-    var bot = new CinemaBot(new TelegramBotClient(token ?? string.Empty));
+    var telegramBotClient = new TelegramBotClient(token ?? string.Empty);
+    var bot = new CinemaBot(telegramBotClient);
     if (handler != null) await bot.StartAsync(handler);
     Console.ReadLine();
 }

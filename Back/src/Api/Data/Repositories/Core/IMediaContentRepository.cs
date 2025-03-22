@@ -10,4 +10,7 @@ public interface IMediaContentRepository : IRepositoryBase<MediaContent>
     Task<MediaContent> GetMyRandom(long telegramUserId, CancellationToken cancellationToken);
     Task<IEnumerable<MediaContent>> GetMyList(long telegramUserId, CancellationToken cancellationToken);
     Task<MediaContent> GetRandom(CancellationToken cancellationToken);
+    Task<bool> DeleteMediaContent(long mediaContentId, CancellationToken cancellationToken);
+    Task<bool> DeleteAllMediaContent(long telegramUserId, CancellationToken cancellationToken);
+    Task<bool> SetInverseStatusContent(long mediaContentId, CancellationToken cancellationToken);
 }

@@ -53,4 +53,25 @@ public class MediaContentController : ControllerBase
         await _mediaContentService.Create(dto, cancellationToken);
         return NoContent();
     }
+    
+    [HttpDelete("/api/MediaContent/{mediaContentId}")]
+    public async Task<IActionResult> DeleteMediaContent(long mediaContentId, CancellationToken cancellationToken = default)
+    {
+        var isDeleted = await _mediaContentService.DeleteMediaContent(mediaContentId, cancellationToken);
+        return isDeleted ? Ok(isDeleted) : StatusCode(500);
+    }
+    
+    [HttpDelete("/api/MediaContent/user/{telegramUserId}")]
+    public async Task<IActionResult> DeleteAllMediaContent(long telegramUserId, CancellationToken cancellationToken = default)
+    {
+        var isDeleted = await _mediaContentService.DeleteAllMediaContent(telegramUserId, cancellationToken);
+        return isDeleted ? Ok(isDeleted) : StatusCode(500);
+    }
+    
+    [HttpPatch("/api/MediaContent/status/{mediaContentId}")]
+    public async Task<IActionResult> SetInverseStatus(long mediaContentId, CancellationToken cancellationToken = default)
+    {
+        var isInversed = await _mediaContentService.SetInverseStatusContent(mediaContentId, cancellationToken);
+        return isInversed ? Ok(isInversed) : StatusCode(500);
+    }
 }

@@ -1,6 +1,6 @@
-﻿using FirstMy.Bot.Core;
-using FirstMy.Bot.Models;
-using Telegram.Bot;
+﻿using Telegram.Bot;
+
+using FirstMy.Bot.Core;
 
 namespace FirstMy.Bot;
 

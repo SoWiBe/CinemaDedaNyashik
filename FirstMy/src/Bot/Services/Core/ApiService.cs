@@ -1,8 +1,7 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Text;
 using System.Text.Json;
-using FirstMy.Bot.Models;
-using Microsoft.Extensions.Configuration;
 using Telegram.Bot.Exceptions;
 
 namespace FirstMy.Bot.Services.Core;
@@ -36,6 +35,11 @@ public abstract class ApiService
     protected async Task<T?> PutAsync<T>(string endpoint, object? data)
     {
         return await SendRequestAsync<T>(endpoint, HttpMethod.Put, data);
+    }
+    
+    protected async Task<T?> PatchAsync<T>(string endpoint, object? data)
+    {
+        return await SendRequestAsync<T>(endpoint, HttpMethod.Patch, data);
     }
 
     protected async Task<T?> DeleteAsync<T>(string endpoint)

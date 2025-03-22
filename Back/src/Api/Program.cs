@@ -8,11 +8,12 @@ using Back.Api.Infrastructure.Middleware;
 using Back.Api.Infrastructure.Repository;
 using Back.Api.Infrastructure.Services;
 using Back.Api.Infrastructure.Services.Core;
+using Back.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-// Настройка Swagger
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -26,11 +27,9 @@ builder.Services.AddSwaggerGen(c =>
             Url = new Uri("https://example.com/license")
         }
     });
-
-    // Настройка форматирования JSON
+    
     c.CustomSchemaIds(x => x.FullName);
-
-    // Настройка отображения XML-комментариев
+    
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
@@ -48,7 +47,12 @@ builder.Services
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var config = builder.Configuration
+        .AddUserSecrets<DbSettings>()
+        .Build();
+
+    var connection = config.GetSection("ConnectionStrings:DefaultConnection").Get<string>();
+    options.UseNpgsql(connection);
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -71,7 +75,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaDedaNyashikApi V1");
-        c.RoutePrefix = string.Empty; // Показывать Swagger на корневом пути
+        c.RoutePrefix = string.Empty;
     });
 }
 
