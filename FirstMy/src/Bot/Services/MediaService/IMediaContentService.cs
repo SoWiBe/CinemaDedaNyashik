@@ -8,4 +8,5 @@ public interface IMediaContentService
     Task<MediaContentResponse?> GetMyRandom(long userId);
     Task<MediaContentResponse?> GetRandom();
     Task<bool> CreateContent(MediaContentRequest? request);
+    Task<bool> ClearMediaContent(long userId);
 }

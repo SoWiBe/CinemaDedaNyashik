@@ -1,10 +1,9 @@
-﻿using FirstMy.Bot.Models;
-using FirstMy.Shared.Constants;
-using Microsoft.Extensions.Configuration;
-using Serilog;
+﻿using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
+
+using FirstMy.Shared.Constants;
 
 namespace FirstMy.Bot.Core;
 
