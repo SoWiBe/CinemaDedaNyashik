@@ -1,8 +1,7 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Text;
 using System.Text.Json;
-using FirstMy.Bot.Models;
-using Microsoft.Extensions.Configuration;
 using Telegram.Bot.Exceptions;
 
 namespace FirstMy.Bot.Services.Core;

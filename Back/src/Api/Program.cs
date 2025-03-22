@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-// Настройка Swagger
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -27,11 +27,9 @@ builder.Services.AddSwaggerGen(c =>
             Url = new Uri("https://example.com/license")
         }
     });
-
-    // Настройка форматирования JSON
+    
     c.CustomSchemaIds(x => x.FullName);
-
-    // Настройка отображения XML-комментариев
+    
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
@@ -77,7 +75,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaDedaNyashikApi V1");
-        c.RoutePrefix = string.Empty; // Показывать Swagger на корневом пути
+        c.RoutePrefix = string.Empty;
     });
 }
 

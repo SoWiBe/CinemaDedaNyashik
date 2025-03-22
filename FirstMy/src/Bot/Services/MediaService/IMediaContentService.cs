@@ -9,4 +9,5 @@ public interface IMediaContentService
     Task<MediaContentResponse?> GetRandom();
     Task<bool> CreateContent(MediaContentRequest? request);
     Task<bool> ClearMediaContent(long userId);
+    Task<bool> RemoveAtMediaContent(long contentId);
 }

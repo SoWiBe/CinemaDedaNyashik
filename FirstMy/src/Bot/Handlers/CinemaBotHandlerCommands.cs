@@ -1,13 +1,14 @@
-﻿using System.Text;
-using FirstMy.Bot.Extensions;
-using FirstMy.Bot.Models;
-using FirstMy.Bot.Models.MediaContent;
-using FirstMy.Bot.Models.User;
-using Serilog;
+﻿using Serilog;
+using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+
+using FirstMy.Bot.Extensions;
+using FirstMy.Bot.Models;
+using FirstMy.Bot.Models.MediaContent;
+using FirstMy.Bot.Models.User;
 
 namespace FirstMy.Bot.Handlers;
 

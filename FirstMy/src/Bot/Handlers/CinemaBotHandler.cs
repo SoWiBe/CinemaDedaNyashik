@@ -1,23 +1,24 @@
-﻿using FirstMy.Bot.Models;
-using FirstMy.Bot.Services.MediaService;
-using FirstMy.Bot.Services.Users;
-using FirstMy.Shared.Constants;
-using FirstMy.Shared.Constants.Error;
-using Serilog;
+﻿using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
+using FirstMy.Bot.Models;
+using FirstMy.Bot.Services.MediaService;
+using FirstMy.Bot.Services.Users;
+using FirstMy.Shared.Constants;
+using FirstMy.Shared.Constants.Error;
+
 namespace FirstMy.Bot.Handlers;
 
 public partial class CinemaBotHandler : IUpdateHandler
 {
+    private readonly Dictionary<long, BotState> _userStates = new();
+    
     private readonly IUsersService _usersService;
     private readonly IMediaContentService _mediaContentService;
-
-    private readonly Dictionary<long, BotState> _userStates = new();
-
+    
     public CinemaBotHandler(IUsersService userService, IMediaContentService mediaContentService)
     {
         _usersService = userService;

@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <Folder Include="docs\" />
+      <Folder Include="src\Bot\Exceptions\" />
       <Folder Include="src\Bot\Middleware\" />
       <Folder Include="src\Bot\Utils\" />
       <Folder Include="src\Infrastructure\Data\" />
@@ -27,8 +28,6 @@
       <Folder Include="src\Infrastructure\Mapping\" />
       <Folder Include="src\Shared\Enums\" />
       <Folder Include="src\Shared\Interfaces\" />
-      <Folder Include="tests\IntegrationTests\" />
-      <Folder Include="tests\UnitTests\" />
       <Folder Include="tools\" />
     </ItemGroup>
 

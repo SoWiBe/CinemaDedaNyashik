@@ -1,11 +1,12 @@
-﻿using FirstMy.Bot;
-using FirstMy.Bot.Handlers;
-using FirstMy.Bot.Models;
-using FirstMy.Infrastructure.Config;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Telegram.Bot;
+
+using FirstMy.Bot;
+using FirstMy.Bot.Handlers;
+using FirstMy.Bot.Models;
+using FirstMy.Infrastructure.Config;
 
 var provider = DiProvider.Init();
 
