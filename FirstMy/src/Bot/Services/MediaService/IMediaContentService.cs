@@ -10,4 +10,5 @@ public interface IMediaContentService
     Task<bool> CreateContent(MediaContentRequest? request);
     Task<bool> ClearMediaContent(long userId);
     Task<bool> RemoveAtMediaContent(long contentId);
+    Task<bool> UpdateMediaContent(long contentId);
 }

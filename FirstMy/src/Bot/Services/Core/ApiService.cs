@@ -36,6 +36,11 @@ public abstract class ApiService
     {
         return await SendRequestAsync<T>(endpoint, HttpMethod.Put, data);
     }
+    
+    protected async Task<T?> PatchAsync<T>(string endpoint, object? data)
+    {
+        return await SendRequestAsync<T>(endpoint, HttpMethod.Patch, data);
+    }
 
     protected async Task<T?> DeleteAsync<T>(string endpoint)
     {

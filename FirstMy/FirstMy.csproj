@@ -26,7 +26,6 @@
       <Folder Include="src\Infrastructure\Data\" />
       <Folder Include="src\Infrastructure\Logging\" />
       <Folder Include="src\Infrastructure\Mapping\" />
-      <Folder Include="src\Shared\Enums\" />
       <Folder Include="src\Shared\Interfaces\" />
       <Folder Include="tools\" />
     </ItemGroup>

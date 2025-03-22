@@ -21,9 +21,12 @@ public class MediaContentService : ApiService, IMediaContentService
     public async Task<bool> CreateContent(MediaContentRequest? request)
         => await PostAsync("/api/MediaContent", request);
 
-    public Task<bool> ClearMediaContent(long userId)
-        => throw new NotImplementedException();
+    public async Task<bool> ClearMediaContent(long userId)
+        => await DeleteAsync<bool>($"/api/MediaContent/user/{userId}");
 
-    public Task<bool> RemoveAtMediaContent(long contentId)
-        => throw new NotImplementedException();
+    public async Task<bool> RemoveAtMediaContent(long contentId)
+        => await DeleteAsync<bool>($"/api/MediaContent/{contentId}");
+
+    public async Task<bool> UpdateMediaContent(long contentId)
+        => await PatchAsync<bool>($"/api/MediaContent/status/{contentId}", null);
 }

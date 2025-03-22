@@ -5,10 +5,14 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-using FirstMy.Bot.Extensions;
 using FirstMy.Bot.Models;
 using FirstMy.Bot.Models.MediaContent;
 using FirstMy.Bot.Models.User;
+using FirstMy.Shared.Constants;
+using FirstMy.Shared.Constants.Emoji;
+using FirstMy.Shared.Constants.Event;
+using FirstMy.Shared.Constants.User;
+using FirstMy.Shared.Enums;
 
 namespace FirstMy.Bot.Handlers;
 
@@ -42,17 +46,78 @@ public partial class CinemaBotHandler
         }
     }
 
-    private async Task GetListContent(ITelegramBotClient botClient, Message message)
+    private async Task GetListContent(ITelegramBotClient botClient, long userId, long chatId)
     {
         try
         {
-           var result = await _mediaContentService.GetMyList(message.From.Id);
-           await botClient.SendMessage(message.Chat.Id, result.ToMessageFormat());
+           var mediaContents = await _mediaContentService.GetMyList(userId);
+           if (mediaContents is null)
+           {
+               await botClient.SendMessage(chatId, ListConstants.EmptyList);
+               return;;
+           }
+
+           var keyboard = new List<List<InlineKeyboardButton>>();
+           foreach (var content in mediaContents)
+           {
+               SetCallbacksForItem(content.Id, ContentActionType.Update, out var updateKey);
+               SetCallbacksForItem(content.Id, ContentActionType.Delete, out var deleteKey);
+               
+               keyboard.Add(new List<InlineKeyboardButton>
+               {
+                   new()
+                   {
+                       Text = $"{ContentEmojiConstants.MediaContentEmoji} {content.Title ?? string.Empty}",
+                       CallbackData = $"{content.Id}"
+                   },
+                   new()
+                   {
+                       Text = content.Status == MediaContentStatus.Success ? 
+                                               ActionsEmojiConstants.SuccessEmoji : 
+                                               ActionsEmojiConstants.WaitingEmoji,
+                       CallbackData = updateKey
+                   },
+                   new()
+                   {
+                       Text = ActionsEmojiConstants.DeleteEmoji,
+                       CallbackData = deleteKey
+                   }
+               });
+           }
+
+           var replyMarkup = new InlineKeyboardMarkup(keyboard);
+           
+           await botClient.SendMessage(
+               chatId: chatId,
+               text: UserConstants.YourList,
+               replyMarkup: replyMarkup);
         }
         catch (ApiRequestException ex)
         {
-            await botClient.SendMessage(message.Chat.Id, ex.Message);
+            await botClient.SendMessage(chatId, ex.Message);
             Log.Error($"{nameof(GetListContent)} : {ex.Message}");
+        }
+    }
+
+    private void SetCallbacksForItem(long itemId, ContentActionType actionType, out string key)
+    {
+        key = string.Empty;
+        
+        switch (actionType)
+        {
+            case ContentActionType.Update:
+                key = $"{EventConstants.Update}{itemId}";
+                if (_mediaContentUpdateCallbacks.TryGetValue(key, out _)) return;
+                _mediaContentUpdateCallbacks[key] = itemId;
+                break;
+            case ContentActionType.Delete:
+                key = $"{EventConstants.Delete}{itemId}";
+                if (_mediaContentDeleteCallbacks.TryGetValue(key, out _)) return;
+                _mediaContentDeleteCallbacks[key] = itemId;
+                break;
+            default:
+                Log.Error($"{nameof(SetCallbacksForItem)} : {itemId} : {key}");
+                break;
         }
     }
 
@@ -144,7 +209,7 @@ public partial class CinemaBotHandler
         {
             var response = "Ваш контент не удален по какой-то причине, попробуйте позже.";
 
-            var result = true;
+            var result = await _mediaContentService.ClearMediaContent(message.From.Id);
             if (result)
             {
                 response = "Ваш контент успешно очищен!";
@@ -170,20 +235,19 @@ public partial class CinemaBotHandler
             var elem = elems[index];
             keyboard.Add(new List<InlineKeyboardButton>
             {
-                new InlineKeyboardButton
+                new()
                 {
                     Text = elem,
                     CallbackData = $"{index}"
                 },
-                new InlineKeyboardButton
+                new()
                 {
-                    Text = "🗑",
+                    Text = ActionsEmojiConstants.DeleteEmoji,
                     CallbackData = $"delete_{index}"
                 },
             });
         }
-        
-        
+
         var replyMarkup = new InlineKeyboardMarkup(keyboard);
             
         await botClient.SendMessage(

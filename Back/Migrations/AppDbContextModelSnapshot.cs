@@ -31,8 +31,7 @@ namespace Back.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Genres")
                         .HasColumnType("text");
@@ -40,10 +39,11 @@ namespace Back.Migrations
                     b.Property<decimal?>("Rating")
                         .HasColumnType("numeric");
 
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -97,7 +97,9 @@ namespace Back.Migrations
                 {
                     b.HasOne("Back.Api.Models.User", "User")
                         .WithMany("MediaContents")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -8,4 +8,6 @@ public static class BotErrorConstants
         = "Missing text content in Telegram message. Message.Text property is null.";
     public const string MissingSender 
         = "Missing sender information in Telegram message. Message.From property is null.";
+    public const string RequestedAction
+        = "The requested action is no longer available";
 }

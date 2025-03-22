@@ -20,7 +20,8 @@ var token = config.GetSection("BotSettings:Token").Get<string>();
 
 try
 {
-    var bot = new CinemaBot(new TelegramBotClient(token ?? string.Empty));
+    var telegramBotClient = new TelegramBotClient(token ?? string.Empty);
+    var bot = new CinemaBot(telegramBotClient);
     if (handler != null) await bot.StartAsync(handler);
     Console.ReadLine();
 }

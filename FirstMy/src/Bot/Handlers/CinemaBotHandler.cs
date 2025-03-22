@@ -8,6 +8,7 @@ using FirstMy.Bot.Models;
 using FirstMy.Bot.Services.MediaService;
 using FirstMy.Bot.Services.Users;
 using FirstMy.Shared.Constants;
+using FirstMy.Shared.Constants.Emoji;
 using FirstMy.Shared.Constants.Error;
 
 namespace FirstMy.Bot.Handlers;
@@ -15,7 +16,9 @@ namespace FirstMy.Bot.Handlers;
 public partial class CinemaBotHandler : IUpdateHandler
 {
     private readonly Dictionary<long, BotState> _userStates = new();
-    
+    private readonly Dictionary<string, long> _mediaContentDeleteCallbacks = new();
+    private readonly Dictionary<string, long> _mediaContentUpdateCallbacks = new();
+
     private readonly IUsersService _usersService;
     private readonly IMediaContentService _mediaContentService;
     
@@ -27,12 +30,63 @@ public partial class CinemaBotHandler : IUpdateHandler
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        if (update.Message is not { } message)
+        if (update.Message is not null)
         {
-            Log.Error(BotErrorConstants.FailedToDeconstruct);
+            await HandleMessageAsync(botClient, update.Message);
+        }
+        else if (update.CallbackQuery is not null)
+        {
+            await HandleUpdateCallbackQueryAsync(botClient, update.CallbackQuery);
+            await HandleDeleteCallbackQueryAsync(botClient, update.CallbackQuery);
+        }
+    }
+    
+    private async Task HandleDeleteCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery updateCallbackQuery)
+    {
+        var data = updateCallbackQuery.Data;
+        if (data is null)
+        {
+            Log.Error(BotErrorConstants.RequestedAction);
             return;
         }
 
+        if (!_mediaContentDeleteCallbacks.TryGetValue(data, out var value)) return;
+        
+        var isDeleted = await _mediaContentService.RemoveAtMediaContent(value);;
+        if (!isDeleted || updateCallbackQuery.Message == null)
+        {
+            await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.DeleteSuccess);
+            return;
+        }
+
+        await GetListContent(botClient, updateCallbackQuery.From.Id, updateCallbackQuery.Message.Chat.Id);
+        await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.DeleteSuccess);
+    }
+    
+    private async Task HandleUpdateCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery updateCallbackQuery)
+    {
+        var data = updateCallbackQuery.Data;
+        if (data is null)
+        {
+            Log.Error(BotErrorConstants.RequestedAction);
+            return;
+        }
+
+        if (!_mediaContentUpdateCallbacks.TryGetValue(data, out var value)) return;
+        
+        var isUpdated = await _mediaContentService.UpdateMediaContent(value);;
+        if (!isUpdated || updateCallbackQuery.Message == null)
+        {
+            await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.Failed);
+            return;
+        }
+
+        await GetListContent(botClient, updateCallbackQuery.From.Id, updateCallbackQuery.Message.Chat.Id);
+        await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.UpdateSuccess);
+    }
+
+    private async Task HandleMessageAsync(ITelegramBotClient botClient, Message message)
+    {
         if (message.Text is null)
         {
             Log.Error(BotErrorConstants.MissingText);
@@ -109,7 +163,7 @@ public partial class CinemaBotHandler : IUpdateHandler
                 userState.CurrentState = BotStateType.WaitingForText;
                 break;
             case CommandConstants.List:
-                await GetListContent(botClient, message);
+                await GetListContent(botClient, message.From.Id, message.Chat.Id);
                 break;
             case CommandConstants.Random:
                 await RandomMediaContent(botClient, message);
