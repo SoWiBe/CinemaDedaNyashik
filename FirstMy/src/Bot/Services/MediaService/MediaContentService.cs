@@ -1,5 +1,4 @@
-﻿using FirstMy.Bot.Models;
-using FirstMy.Bot.Models.MediaContent;
+﻿using FirstMy.Bot.Models.MediaContent;
 using FirstMy.Bot.Services.Core;
 using Microsoft.Extensions.Configuration;
 
@@ -7,7 +6,7 @@ namespace FirstMy.Bot.Services.MediaService;
 
 public class MediaContentService : ApiService, IMediaContentService
 {
-    public MediaContentService(IConfigurationRoot root, HttpClient httpClient) : base(root, httpClient) { }
+    public MediaContentService(IConfigurationRoot configurationRoot, HttpClient httpClient) : base(configurationRoot, httpClient) { }
 
     public async Task<IEnumerable<MediaContentResponse>?> GetMyList(long userId)
         => await GetAsync<IEnumerable<MediaContentResponse>>($"/api/MediaContent/{userId}/list");

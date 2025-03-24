@@ -33,7 +33,7 @@ public static class DiProvider
             loggingBuilder.AddConsole();
             loggingBuilder.SetMinimumLevel(LogLevel.Information);
         });
-        
+
         services.AddSingleton(config);
         services.AddLogging();
         services.AddTransient<CinemaBot>();

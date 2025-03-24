@@ -6,7 +6,7 @@ namespace FirstMy.Bot.Services.Users;
 
 public class UsersService : ApiService, IUsersService
 {
-    public UsersService(IConfigurationRoot root, HttpClient httpClient) : base(root, httpClient) { }
+    public UsersService(IConfigurationRoot configurationRoot, HttpClient httpClient) : base(configurationRoot, httpClient) { }
     
     public async Task<User?> GetUserAsync(long userId)
         => await GetAsync<User?>($"/api/Users/{userId}");
