@@ -1,13 +1,13 @@
-﻿using System.Reflection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+
 using FirstMy.Bot;
 using FirstMy.Bot.Handlers;
 using FirstMy.Bot.Models;
 using FirstMy.Bot.Services.MediaService;
 using FirstMy.Bot.Services.Users;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace FirstMy.Infrastructure.Config;
 
@@ -33,7 +33,7 @@ public static class DiProvider
             loggingBuilder.AddConsole();
             loggingBuilder.SetMinimumLevel(LogLevel.Information);
         });
-        
+
         services.AddSingleton(config);
         services.AddLogging();
         services.AddTransient<CinemaBot>();

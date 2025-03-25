@@ -28,4 +28,13 @@ public class MediaContentService : IMediaContentService
 
     public async Task<MediaContent> GetRandom(CancellationToken cancellationToken)
         => await _mediaContentRepository.GetRandom(cancellationToken);
+
+    public async Task<bool> DeleteMediaContent(long mediaContentId, CancellationToken cancellationToken)
+        => await _mediaContentRepository.DeleteMediaContent(mediaContentId, cancellationToken);
+
+    public async Task<bool> DeleteAllMediaContent(long telegramUserId, CancellationToken cancellationToken)
+        => await _mediaContentRepository.DeleteAllMediaContent(telegramUserId, cancellationToken);
+
+    public async Task<bool> SetInverseStatusContent(long mediaContentId, CancellationToken cancellationToken)
+        => await _mediaContentRepository.SetInverseStatusContent(mediaContentId, cancellationToken);
 }

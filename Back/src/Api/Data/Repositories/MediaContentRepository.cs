@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Back.Api.Data.Repositories.Core;
+using Back.Api.Endpoints.Responses;
 using Back.Api.Infrastructure.Dto.MediaContent;
 using Back.Api.Infrastructure.Exceptions;
 using Back.Api.Infrastructure.Repository;
 using Back.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Back.Api.Data.Repositories;
 
@@ -47,6 +49,7 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         var random = new Random();
         
         var randomItem = user.MediaContents!
+            .Where(x => x.Status != MediaContentStatus.Deleted)
             .OrderBy(x => x.Title)
             .Skip(random.Next(user.MediaContents!.Count()))
             .Take(1)
@@ -65,7 +68,7 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         if (user.MediaContents?.Any() == false)
             throw new CustomException("У вас пока что нет контента для получения!");
         
-        return user.MediaContents!; 
+        return user.MediaContents!.Where(x => x.Status != MediaContentStatus.Deleted).ToList(); 
     }
 
     public async Task<MediaContent> GetRandom(CancellationToken cancellationToken)
@@ -75,6 +78,7 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         var random = new Random();
         
         var randomItem = mediaContents
+            .Where(x => x.Status != MediaContentStatus.Deleted)
             .OrderBy(x => x.Title)
             .Skip(random.Next(mediaContents!.Count()))
             .Take(1)
@@ -84,6 +88,66 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
             throw new CustomException("Ничего не выпало(((");
 
         return randomItem;
+    }
+
+    public async Task<bool> DeleteMediaContent(long mediaContentId, CancellationToken cancellationToken)
+    {
+        var mediaContent = await _context.MediaContents
+            .FirstOrDefaultAsync(x => x.Id == mediaContentId, cancellationToken);
+
+        if (mediaContent is null)
+        {
+            Log.Error("Контент был не найден");
+            return false;
+        }
+
+        mediaContent.Status = MediaContentStatus.Deleted;
+        
+        _context.MediaContents.Update(mediaContent);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
+    public async Task<bool> DeleteAllMediaContent(long telegramUserId, CancellationToken cancellationToken)
+    {
+        var mediaContents = await _context.MediaContents.Where(x => x.UserId == telegramUserId)
+            .ToListAsync(cancellationToken);
+
+        if (!mediaContents.Any())
+        {
+            Log.Error("Контент был не найден");
+            return false;
+        }
+        
+        foreach (var mediaContent in mediaContents)
+            mediaContent.Status = MediaContentStatus.Deleted;
+
+        _context.MediaContents.UpdateRange(mediaContents);
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        return true; 
+    }
+
+    public async Task<bool> SetInverseStatusContent(long mediaContentId, CancellationToken cancellationToken)
+    {
+        var mediaContent = await _context.MediaContents.FirstOrDefaultAsync(x 
+            => x.Id == mediaContentId && x.Status != MediaContentStatus.Deleted, cancellationToken);
+        
+        if (mediaContent is null)
+        {
+            Log.Error("Контент был не найден или удален");
+            return false;
+        }
+        
+        mediaContent.Status = mediaContent.Status == MediaContentStatus.Success 
+            ? MediaContentStatus.Waiting 
+            : MediaContentStatus.Success;
+
+        _context.MediaContents.Update(mediaContent);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 
     private async Task<User> GetUser(long telegramUserId, CancellationToken cancellationToken)

@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
-using FirstMy.Bot.Models;
 using Microsoft.Extensions.Configuration;
 using Telegram.Bot.Exceptions;
 
@@ -12,10 +11,10 @@ public abstract class ApiService
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    protected ApiService(IConfigurationRoot root, HttpClient httpClient)
+    protected ApiService(IConfigurationRoot configurationRoot, HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _baseUrl = root.GetSection("CinemaApi:Url").Get<string>() ?? string.Empty;
+        _baseUrl = configurationRoot.GetSection("CinemaApi:Api").Get<string>() ?? string.Empty;
     }
     
     protected async Task<T?> GetAsync<T>(string endpoint)
@@ -36,6 +35,11 @@ public abstract class ApiService
     protected async Task<T?> PutAsync<T>(string endpoint, object? data)
     {
         return await SendRequestAsync<T>(endpoint, HttpMethod.Put, data);
+    }
+    
+    protected async Task<T?> PatchAsync<T>(string endpoint, object? data)
+    {
+        return await SendRequestAsync<T>(endpoint, HttpMethod.Patch, data);
     }
 
     protected async Task<T?> DeleteAsync<T>(string endpoint)

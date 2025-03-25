@@ -1,5 +1,4 @@
-﻿using FirstMy.Bot.Models;
-using FirstMy.Bot.Models.User;
+﻿using FirstMy.Bot.Models.User;
 
 namespace FirstMy.Bot.Services.Users;
 
