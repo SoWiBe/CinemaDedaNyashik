@@ -23,7 +23,7 @@ try
     var telegramBotClient = new TelegramBotClient(token ?? string.Empty);
     var bot = new CinemaBot(telegramBotClient);
     if (handler != null) await bot.StartAsync(handler);
-    Console.ReadLine();
+    await Task.Delay(-1);
 }
 catch (Exception ex)
 {
