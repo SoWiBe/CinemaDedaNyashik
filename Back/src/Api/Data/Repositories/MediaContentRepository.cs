@@ -47,17 +47,19 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
             throw new CustomException("У вас пока что нет контента для получения!");
 
         var random = new Random();
+
+        var items = user.MediaContents
+            .Where(x => x.Status == MediaContentStatus.Waiting)
+            .OrderBy(x => x.Title);
         
-        var randomItem = user.MediaContents!
-            .Where(x => x.Status != MediaContentStatus.Deleted)
-            .OrderBy(x => x.Title)
-            .Skip(random.Next(user.MediaContents!.Count()))
+        if (items?.Any() == false)
+            throw new CustomException("Ничего не выпало(((");
+        
+        var randomItem = items
+            .Skip(random.Next(items.Count()))
             .Take(1)
             .FirstOrDefault();
         
-        if (randomItem is null)
-            throw new CustomException("Ничего не выпало(((");
-
         return randomItem;
     }
 

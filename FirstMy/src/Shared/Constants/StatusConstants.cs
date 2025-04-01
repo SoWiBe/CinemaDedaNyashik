@@ -7,4 +7,5 @@ public static class StatusConstants
     public const string Failed = $"🚫 Ошибка ((( 🚫";
     public const string DeleteSuccess = $"🎯 Ваш контент успешно убран из списка! 🎯";
     public const string UpdateSuccess = $"🔄 Ваш контент успешно обновлен! 🔄";
+    public const string LuckyStatus = $"✨ Везение прокачено ✨ ";
 }

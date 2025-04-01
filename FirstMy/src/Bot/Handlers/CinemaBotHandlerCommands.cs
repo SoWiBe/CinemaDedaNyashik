@@ -32,16 +32,21 @@ public partial class CinemaBotHandler
         }
     }
 
-    private async Task RandomMediaContent(ITelegramBotClient botClient, Message message)
+    private async Task RandomMediaContent(ITelegramBotClient botClient, long chatId, long userId)
     {
         try
         {
-            var result = await _mediaContentService.GetMyRandom(message.From.Id);
-            await botClient.SendMessage(message.Chat.Id, $"Выбор пал на: {result?.Title ?? string.Empty}");
+            var result = await _mediaContentService.GetMyRandom(userId);
+            var messageToClient = $"Выбор пал на: {result?.Title}";
+            
+            if (result?.Title is null)
+                messageToClient = ListConstants.EmptyList;
+            
+            await botClient.SendMessage(chatId, messageToClient);
         }
         catch (ApiRequestException ex)
         {
-            await botClient.SendMessage(message.Chat.Id, ex.Message);
+            await botClient.SendMessage(chatId, ex.Message);
             Log.Error($"{nameof(RandomMediaContent)} : {ex.Message}");
         }
     }
@@ -69,12 +74,16 @@ public partial class CinemaBotHandler
                    {
                        Text = $"{ContentEmojiConstants.MediaContentEmoji} {content.Title ?? string.Empty}",
                        CallbackData = $"{content.Id}"
-                   },
+                   }
+               });
+               
+               keyboard.Add(new List<InlineKeyboardButton>
+               {
                    new()
                    {
                        Text = content.Status == MediaContentStatus.Success ? 
-                                               ActionsEmojiConstants.SuccessEmoji : 
-                                               ActionsEmojiConstants.WaitingEmoji,
+                           ActionsEmojiConstants.SuccessEmoji : 
+                           ActionsEmojiConstants.WaitingEmoji,
                        CallbackData = updateKey
                    },
                    new()
@@ -84,6 +93,15 @@ public partial class CinemaBotHandler
                    }
                });
            }
+           
+           keyboard.Add(new List<InlineKeyboardButton>
+           {
+               new()
+               {
+                   Text = ActionsEmojiConstants.RandomEmoji,
+                   CallbackData = "random"
+               }
+           });
 
            var replyMarkup = new InlineKeyboardMarkup(keyboard);
            

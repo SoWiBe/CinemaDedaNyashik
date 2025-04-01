@@ -38,9 +38,27 @@ public partial class CinemaBotHandler : IUpdateHandler
         {
             await HandleUpdateCallbackQueryAsync(botClient, update.CallbackQuery);
             await HandleDeleteCallbackQueryAsync(botClient, update.CallbackQuery);
+            
+            await HandleRandomCallbackQueryAsync(botClient, update.CallbackQuery);
         }
     }
-    
+
+    private async Task HandleRandomCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery updateCallbackQuery)
+    {
+        var data = updateCallbackQuery.Data;
+        if (data is null)
+        {
+            Log.Error(BotErrorConstants.RequestedAction);
+            return;
+        }
+
+        if (data == "random")
+        {
+            await RandomMediaContent(botClient, updateCallbackQuery.Message.Chat.Id, updateCallbackQuery.From.Id);
+            await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.LuckyStatus);
+        }
+    }
+
     private async Task HandleDeleteCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery updateCallbackQuery)
     {
         var data = updateCallbackQuery.Data;
@@ -166,7 +184,7 @@ public partial class CinemaBotHandler : IUpdateHandler
                 await GetListContent(botClient, message.From.Id, message.Chat.Id);
                 break;
             case CommandConstants.Random:
-                await RandomMediaContent(botClient, message);
+                await RandomMediaContent(botClient, message.From.Id, message.Chat.Id);
                 break;
             case CommandConstants.RandomAll:
                 await RandomAllMediaContent(botClient, message);
