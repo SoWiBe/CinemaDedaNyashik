@@ -8,8 +8,8 @@ using FirstMy.Bot.Models;
 using FirstMy.Bot.Services.MediaService;
 using FirstMy.Bot.Services.Users;
 using FirstMy.Shared.Constants;
-using FirstMy.Shared.Constants.Emoji;
 using FirstMy.Shared.Constants.Error;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace FirstMy.Bot.Handlers;
 
@@ -21,6 +21,7 @@ public partial class CinemaBotHandler : IUpdateHandler
 
     private readonly IUsersService _usersService;
     private readonly IMediaContentService _mediaContentService;
+    private InlineKeyboardMarkup _inlineKeyboardMarkup = new();
     
     public CinemaBotHandler(IUsersService userService, IMediaContentService mediaContentService)
     {
@@ -77,8 +78,18 @@ public partial class CinemaBotHandler : IUpdateHandler
             return;
         }
 
-        await GetListContent(botClient, updateCallbackQuery.From.Id, updateCallbackQuery.Message.Chat.Id);
+        await UpdateKeyboard(botClient, updateCallbackQuery.Message.Chat.Id, updateCallbackQuery.Message.Id, 
+            updateCallbackQuery.From.Id);
         await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.DeleteSuccess);
+    }
+    
+    private async Task UpdateKeyboard(ITelegramBotClient botClient, long chatId, long messageId, long userId)
+    {
+        var keyboard = await GenerateKeyboard(botClient, userId, chatId);
+        await botClient.EditMessageReplyMarkup(
+            chatId: chatId,
+            messageId: (int)messageId,
+            replyMarkup: keyboard);
     }
     
     private async Task HandleUpdateCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery updateCallbackQuery)
@@ -99,7 +110,7 @@ public partial class CinemaBotHandler : IUpdateHandler
             return;
         }
 
-        await GetListContent(botClient, updateCallbackQuery.From.Id, updateCallbackQuery.Message.Chat.Id);
+        await UpdateKeyboard(botClient, updateCallbackQuery.Message.Chat.Id,  updateCallbackQuery.Message.Id, updateCallbackQuery.From.Id);
         await botClient.AnswerCallbackQuery(updateCallbackQuery.Id, StatusConstants.UpdateSuccess);
     }
 

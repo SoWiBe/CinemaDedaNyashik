@@ -55,66 +55,72 @@ public partial class CinemaBotHandler
     {
         try
         {
-           var mediaContents = await _mediaContentService.GetMyList(userId);
-           if (mediaContents is null)
-           {
-               await botClient.SendMessage(chatId, ListConstants.EmptyList);
-               return;;
-           }
-
-           var keyboard = new List<List<InlineKeyboardButton>>();
-           foreach (var content in mediaContents)
-           {
-               SetCallbacksForItem(content.Id, ContentActionType.Update, out var updateKey);
-               SetCallbacksForItem(content.Id, ContentActionType.Delete, out var deleteKey);
-               
-               keyboard.Add(new List<InlineKeyboardButton>
-               {
-                   new()
-                   {
-                       Text = $"{ContentEmojiConstants.MediaContentEmoji} {content.Title ?? string.Empty}",
-                       CallbackData = $"{content.Id}"
-                   }
-               });
-               
-               keyboard.Add(new List<InlineKeyboardButton>
-               {
-                   new()
-                   {
-                       Text = content.Status == MediaContentStatus.Success ? 
-                           ActionsEmojiConstants.SuccessEmoji : 
-                           ActionsEmojiConstants.WaitingEmoji,
-                       CallbackData = updateKey
-                   },
-                   new()
-                   {
-                       Text = ActionsEmojiConstants.DeleteEmoji,
-                       CallbackData = deleteKey
-                   }
-               });
-           }
+            var keyboard = await GenerateKeyboard(botClient, userId, chatId);
            
-           keyboard.Add(new List<InlineKeyboardButton>
-           {
-               new()
-               {
-                   Text = ActionsEmojiConstants.RandomEmoji,
-                   CallbackData = "random"
-               }
-           });
-
-           var replyMarkup = new InlineKeyboardMarkup(keyboard);
            
            await botClient.SendMessage(
                chatId: chatId,
                text: UserConstants.YourList,
-               replyMarkup: replyMarkup);
+               replyMarkup: keyboard);
         }
         catch (ApiRequestException ex)
         {
             await botClient.SendMessage(chatId, ex.Message);
             Log.Error($"{nameof(GetListContent)} : {ex.Message}");
         }
+    }
+
+    private async Task<InlineKeyboardMarkup> GenerateKeyboard(ITelegramBotClient botClient, long userId, long chatId)
+    {
+        var mediaContents = await _mediaContentService.GetMyList(userId);
+        if (mediaContents is null)
+        {
+            await botClient.SendMessage(chatId, ListConstants.EmptyList);
+            return new InlineKeyboardMarkup();
+        }
+
+        var keyboard = new List<List<InlineKeyboardButton>>();
+        foreach (var content in mediaContents)
+        {
+            SetCallbacksForItem(content.Id, ContentActionType.Update, out var updateKey);
+            SetCallbacksForItem(content.Id, ContentActionType.Delete, out var deleteKey);
+               
+            keyboard.Add(new List<InlineKeyboardButton>
+            {
+                new()
+                {
+                    Text = $"{ContentEmojiConstants.MediaContentEmoji} {content.Title ?? string.Empty}",
+                    CallbackData = $"{content.Id}"
+                }
+            });
+               
+            keyboard.Add(new List<InlineKeyboardButton>
+            {
+                new()
+                {
+                    Text = content.Status == MediaContentStatus.Success ? 
+                        ActionsEmojiConstants.SuccessEmoji : 
+                        ActionsEmojiConstants.WaitingEmoji,
+                    CallbackData = updateKey
+                },
+                new()
+                {
+                    Text = ActionsEmojiConstants.DeleteEmoji,
+                    CallbackData = deleteKey
+                }
+            });
+        }
+           
+        keyboard.Add(new List<InlineKeyboardButton>
+        {
+            new()
+            {
+                Text = ActionsEmojiConstants.RandomEmoji,
+                CallbackData = "random"
+            }
+        });
+        
+        return new InlineKeyboardMarkup(keyboard);
     }
 
     private void SetCallbacksForItem(long itemId, ContentActionType actionType, out string key)
@@ -161,17 +167,14 @@ public partial class CinemaBotHandler
             
             var commands = await botClient.GetMyCommands();
             var welcomeMessage = @$"
-                Привет! Я твой персональный кинопомощник 🎬
+            🌸 Мяу! Ой, то есть... Привет! Я CinemaNyashik! 🌸 Твой самый очаровательный кино-помощник! 🥰
 
-                С помощью меня ты можешь:
-                • Добавлять любимые фильмы и сериалы в свой список
-                • Получать рекомендации случайного фильма по настроению
-                • Вести учет просмотренного (еще не готово)
-                
-                Основные команды:
-                {ToMessageFormat(commands)}
+        Вечно теряешь бумажки с названиями фильмов? 😅 Доверь это мне! Я помогу создать твой уютный списочек кино для будущих вечеров! 🎞️✨
 
-                Давай начнем с первого фильма / сериала ! Напиши /add и название фильма 😊";
+        Что я умею?
+        💖 Добавлять любое кино по одному названию!
+        ✏️ Редактировать и обновлять твой список желаний.
+        🗑️ Убирать фильмы, если передумал смотреть.";
             
             await botClient.SendMessage(message.Chat.Id, welcomeMessage);
         }
