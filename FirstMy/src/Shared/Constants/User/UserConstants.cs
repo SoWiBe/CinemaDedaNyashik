@@ -2,5 +2,5 @@
 
 public static class UserConstants
 {
-    public const string YourList = "⭐ Ваш список ⭐";
+    public const string YourList = "🌸 Nyash List 🌸 ";
 }
