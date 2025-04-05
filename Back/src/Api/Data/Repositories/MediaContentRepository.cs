@@ -69,8 +69,9 @@ public class MediaContentRepository : RepositoryBase<MediaContent>, IMediaConten
         
         if (user.MediaContents?.Any() == false)
             throw new CustomException("У вас пока что нет контента для получения!");
-        
-        return user.MediaContents!.Where(x => x.Status != MediaContentStatus.Deleted).ToList(); 
+
+        var result = user.MediaContents!.Where(x => x.Status != MediaContentStatus.Deleted).ToList();
+        return result.OrderBy(x => x.Title);  
     }
 
     public async Task<MediaContent> GetRandom(CancellationToken cancellationToken)
