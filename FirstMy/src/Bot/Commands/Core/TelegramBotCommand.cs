@@ -1,4 +1,7 @@
-﻿namespace FirstMy.Bot.Commands.Core;
+﻿using Telegram.Bot;
+using Telegram.Bots.Types;
+
+namespace FirstMy.Bot.Commands.Core;
 
 public abstract class TelegramBotCommand
 {
@@ -9,5 +12,13 @@ public abstract class TelegramBotCommand
         CommandName = commandName;
     }
 
-    protected abstract Task CommandLogic();
+    protected virtual Task CommandLogic(ITelegramBotClient botClient, long userId, long chatId)
+    {
+        return Task.Delay(1);
+    }
+    
+    protected virtual Task CommandLogic(ITelegramBotClient botClient, Message message)
+    {
+        return Task.Delay(1);
+    }
 }

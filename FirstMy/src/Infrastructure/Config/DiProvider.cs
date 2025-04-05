@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 
 using FirstMy.Bot;
+using FirstMy.Bot.Commands;
 using FirstMy.Bot.Handlers;
 using FirstMy.Bot.Models;
 using FirstMy.Bot.Services.MediaService;
@@ -43,6 +44,7 @@ public static class DiProvider
         services.AddTransient<CinemaBotHandler>();
         services.AddScoped<IUsersService, UsersService>();
         services.AddScoped<IMediaContentService, MediaContentService>();
+        services.AddSingleton<StartCommand>();
 
         return services.BuildServiceProvider();
     }

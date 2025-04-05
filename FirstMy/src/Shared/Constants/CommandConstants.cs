@@ -2,7 +2,8 @@
 
 public static class CommandConstants
 {
-    public const string Info = "/info";
+    public const string Start = "/start";
+    //public const string Info = "/info";
     public const string Add = "/add";
     public const string Random = "/random";
     public const string RandomAll = "/allrandom";

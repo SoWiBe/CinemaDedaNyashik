@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using FirstMy.Bot.Commands;
+using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -7,6 +8,7 @@ using Telegram.Bot.Types;
 using FirstMy.Bot.Models;
 using FirstMy.Bot.Services.MediaService;
 using FirstMy.Bot.Services.Users;
+using FirstMy.Infrastructure.Config;
 using FirstMy.Shared.Constants;
 using FirstMy.Shared.Constants.Error;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -184,7 +186,7 @@ public partial class CinemaBotHandler : IUpdateHandler
     {
         switch (message.Text!.ToLower())
         {
-            case CommandConstants.Info:
+            case CommandConstants.Start:
                 await SendStart(botClient, message);
                 break;
             case CommandConstants.Add:
